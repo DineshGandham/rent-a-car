@@ -65,9 +65,9 @@ const Login = () => {
           <Link to="/register" className="hover:underline">
             Don’t have an account? Register
           </Link>
-          <a href="#" className="hover:underline">
+          <Link to="/forgot-password" className="hover:underline">
             Forgot Password?
-          </a>
+            </Link>
         </div>
       </motion.form>
     </div>

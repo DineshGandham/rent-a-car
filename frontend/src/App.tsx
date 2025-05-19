@@ -5,6 +5,7 @@ import Booking from './pages/Bookings';
 import PageLayout from './components/PageLayout';
 import Vehicles from './pages/Vehicles';
 import Register from './pages/Register';
+import ForgotPassword from "./pages/ForgotPassword";
 import { useSelector } from 'react-redux';
 import CarLoader from './components/CarLoader';
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/bookings" element={<Booking />} />
         <Route path="/vehicles" element={<Vehicles/>}/>
         <Route path="/register" element={<Register/>}/>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/" element={<CarList />} />
       </Routes>
       </PageLayout>
