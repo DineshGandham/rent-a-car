@@ -6,7 +6,7 @@
 # Maven build artifacts
 target/
 *.jar
-*.war
+*.war   
 
 # Maven wrapper (excluding essential file)
 .mvn/
