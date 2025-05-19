@@ -1,0 +1,45 @@
+# System & IDE metadata
+.metadata/
+.idea/
+.vscode/
+
+# Maven build artifacts
+target/
+*.jar
+*.war
+
+# Maven wrapper (excluding essential file)
+.mvn/
+!.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
+
+# Node.js dependencies and build files (for frontend)
+node_modules/
+build/
+dist/
+
+# Sensitive configuration files
+.env
+application.properties
+secrets.json
+
+# Logs and temporary files
+logs/
+*.log
+*.tmp
+
+# VS Code & Eclipse settings
+.springBeans
+.sts4-cache
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+
+# Git configuration (keep .gitattributes, ignore global ignore file)
+.gitattributes
+
+# Documentation (optional)
+HELP.md

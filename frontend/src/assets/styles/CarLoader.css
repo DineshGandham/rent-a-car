@@ -1,0 +1,97 @@
+.loader-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loader-text {
+  color: white;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  animation: pulse 2s infinite;
+  letter-spacing: 0.5px;
+}
+
+/* Car shake */
+.car__body {
+  animation: shake 0.2s ease-in-out infinite alternate;
+}
+
+/* Lines animation */
+.car__line {
+  transform-origin: center right;
+  stroke-dasharray: 22;
+  animation: line 0.8s ease-in-out infinite;
+  animation-fill-mode: both;
+}
+
+.car__line--top {
+  animation-delay: 0s;
+}
+.car__line--middle {
+  animation-delay: 0.2s;
+}
+.car__line--bottom {
+  animation-delay: 0.4s;
+}
+
+/* Tyre rotation removed */
+/* .car__wheel {
+  transform-origin: center;
+  animation: rotate 1s linear infinite;
+} */
+
+/* Shake animation */
+@keyframes shake {
+  0% {
+    transform: translateY(-1%);
+  }
+  100% {
+    transform: translateY(3%);
+  }
+}
+
+/* Line drawing animation */
+@keyframes line {
+  0%, 25% {
+    stroke-dashoffset: 22;
+  }
+  50%, 51% {
+    stroke-dashoffset: 0;
+  }
+  80%, 100% {
+    stroke-dashoffset: -22;
+  }
+}
+
+/* Tyre spin removed */
+/* @keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} */
+
+/* Text pulse */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
