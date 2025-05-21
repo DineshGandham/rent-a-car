@@ -40,7 +40,8 @@ public class AuthController {
             manager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             log.info("Authentication successful for username: {}", request.getUsername());
             String token = jwtUtil.generateToken(request.getUsername());
-            return ResponseEntity.ok(new AuthResponse(token,"Authentication successful"));
+            String user = request.getUsername();
+            return ResponseEntity.ok(new AuthResponse(token,"Authentication successful",user));
         } catch (BadCredentialsException e) {
             log.error("Invalid credentials for username: {}", request.getUsername());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse("Invalid credentials"));
