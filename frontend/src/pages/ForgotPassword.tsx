@@ -1,25 +1,13 @@
 import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
+import { useForgotPassword } from "../hooks/auth/useForgotPassword";
 import { Link } from "react-router-dom";
 
-type FormValues = {
-  email: string;
-};
-
 const ForgotPassword = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>();
-
-  const onSubmit = (data: FormValues) => {
-    console.log("Reset link sent to:", data.email);
-  };
-
+  const { register, handleSubmit, onSubmit, errors } = useForgotPassword();
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 to-gray-700 px-4">
       <motion.form
+        noValidate
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -39,21 +27,13 @@ const ForgotPassword = () => {
           </label>
           <input
             id="email"
-            type="email"
+            type="text"
             placeholder="example@mail.com"
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 bg-white/80"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Invalid email format",
-              },
-            })}
+            {...register("email")}
           />
           {errors.email && (
-            <p className="text-sm text-red-300 mt-1">
-              {errors.email.message}
-            </p>
+            <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
           )}
         </div>
 

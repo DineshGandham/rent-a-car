@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { registerUserAPI, loginUserAPI } from "../api/authAPI";
+import { registerUserAPI, loginUserAPI, forgotPassApi } from "../api/authAPI";
 import { AuthState, AuthResponse } from "../types/Auth";
 
 const initialState: AuthState = {
@@ -36,6 +36,15 @@ export const loginUser = createAsyncThunk<
     return rejectWithValue(error.response?.data?.message || "Login failed");
   }
 });
+
+export const forgotPassword = createAsyncThunk("auth/resetpassword", async (userData, {rejectWithValue}) => {
+  try {
+    const response = await forgotPassApi(userData);
+    return response;
+  } catch (error:any) {
+    return rejectWithValue(error.response?.data?.message || "Failed to send email");
+  }
+})
 
 const authSlice = createSlice({
   name: "auth",
@@ -86,7 +95,18 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Login failed";
-      });
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to send email";
+      })
   },
 });
 

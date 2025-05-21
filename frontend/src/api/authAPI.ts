@@ -14,3 +14,9 @@ export const loginUserAPI = async (userData: any) => {
   const response = await API.post('/login', userData);
   return response.data;
 };
+
+
+export const forgotPassApi = async (userData:any) => {
+  const response = await API.post('/resetPassword', userData);
+  return response.data;
+}

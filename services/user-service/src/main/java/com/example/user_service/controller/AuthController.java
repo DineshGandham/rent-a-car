@@ -49,14 +49,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse("Username already exists"));
+            log.info("Username already exists", request.getUsername());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RegisterResponse("Username already exists"));
         }
     
         // Check if the email already exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse("Email already exists"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RegisterResponse("Email already exists"));
         }
 
         User user = new User();
@@ -71,6 +72,6 @@ public class AuthController {
         log.info("User registered: {}", request.getUsername());
 
         String token = jwtUtil.generateToken(request.getUsername());
-        return ResponseEntity.ok(new AuthResponse(token,"User Registered successfully"));
+        return ResponseEntity.ok(new RegisterResponse(token,"User Registered successfully"));
     }
 }
