@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "../../schemas/registerSchema";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { registerUser } from "../../slices/authSlice";
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -18,9 +18,18 @@ export function useRegister() {
   });
 
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data:any) => {
+    const usernameFromEmail = data.email.split('@')[0];
+
+    const transformedData = {
+      username: usernameFromEmail,
+      fullName: data.name,
+      email: data.email,
+      password: data.password,
+    };
+
     try {
-      const result = await dispatch(registerUser(data)).unwrap();
+      const result = await dispatch(registerUser(transformedData)).unwrap();
       toast.success('Registration successful!');
       navigate('/login');
     } catch (err: any) {

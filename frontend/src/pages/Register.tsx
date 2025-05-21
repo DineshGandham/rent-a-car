@@ -37,7 +37,7 @@ const Register = () => {
             Email Address
           </label>
           <input
-            type="email"
+            type="text"
             id="email"
             {...register('email')}
             placeholder="Enter your email"
