@@ -17,6 +17,6 @@ export const loginUserAPI = async (userData: any) => {
 
 
 export const forgotPassApi = async (userData:any) => {
-  const response = await API.post('/resetPassword', userData);
+  const response = await API.post('/forgotPassword', userData);
   return response.data;
 }
