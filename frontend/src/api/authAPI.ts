@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:8080/auth',
+  baseURL: 'http://localhost:8080/api/users',
 });
 
 export const registerUserAPI = async (userData: any) => {

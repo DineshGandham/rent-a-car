@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import com.example.user_service.dto.*;
 import com.example.user_service.repository.PasswordResetTokenRepository;
 import com.example.user_service.repository.UserRepository;
-import com.example.user_service.security.JwtUtil;
 import com.example.user_service.service.EmailService;
 
 import jakarta.mail.MessagingException;
@@ -30,15 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/users")
 public class AuthController {
 
     @Autowired
     private AuthenticationManager manager;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -58,14 +53,23 @@ public class AuthController {
         try {
             manager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             log.info("Authentication successful for username: {}", request.getUsername());
-            String token = jwtUtil.generateToken(request.getUsername());
-            String user = request.getUsername();
-            return ResponseEntity.ok(new AuthResponse(token,"Authentication successful",user));
+
+            // No token generation here
+            Optional<User> user = userRepository.findByUsername(request.getUsername());
+            return user.map(u -> ResponseEntity.ok(new AuthResponse(
+                    null,
+                    "Authentication successful",
+                    u.getUsername(),
+                    u.getId(),
+                    u.getRole()))).orElseGet(
+                            () -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(new AuthResponse("User not found")));
+
         } catch (BadCredentialsException e) {
             log.error("Invalid credentials for username: {}", request.getUsername());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse("Invalid credentials"));
         }
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
@@ -89,8 +93,8 @@ public class AuthController {
         userRepository.save(user);
 
         log.info("User registered: {}", request.getUsername());
-
-        String token = jwtUtil.generateToken(request.getUsername());
+            String token = "";
+        // String token = jwtUtil.generateToken(request.getUsername());
         return ResponseEntity.ok(new RegisterResponse(token,"User Registered successfully"));
     }
 
