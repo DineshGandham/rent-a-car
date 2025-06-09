@@ -9,8 +9,6 @@ public class AuthResponse {
     private String token; 
     private String message;
     private String username;
-    private String userId;
-    private String role;
 
     public AuthResponse(String message) {
         this.message = message;
