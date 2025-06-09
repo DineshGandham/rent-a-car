@@ -17,6 +17,7 @@ export const registerUser = createAsyncThunk<
   try {
     const response = await registerUserAPI(userData);
     return response;
+  
   } catch (error: any) {
     return rejectWithValue(
       error.response?.data?.message || "Registration failed"
@@ -86,10 +87,11 @@ const authSlice = createSlice({
         loginUser.fulfilled,
         (state, action: PayloadAction<AuthResponse>) => {
           state.loading = false;
+          console.log(action.payload)
           state.user = action.payload.user;
           state.token = action.payload.token;
           localStorage.setItem("token", action.payload.token);
-          localStorage.setItem("user", action.payload.user);
+          localStorage.setItem("user", action.payload.username);
         }
       )
       .addCase(loginUser.rejected, (state, action) => {

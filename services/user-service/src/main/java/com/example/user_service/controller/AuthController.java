@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.user_service.dto.*;
 import com.example.user_service.repository.PasswordResetTokenRepository;
 import com.example.user_service.repository.UserRepository;
+import com.example.user_service.security.JwtUtil;
 import com.example.user_service.service.EmailService;
 
 import jakarta.mail.MessagingException;
@@ -46,6 +47,9 @@ public class AuthController {
     @Autowired
     private EmailService emailService;
 
+     @Autowired
+    private JwtUtil jwtUtil;
+
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
@@ -53,17 +57,9 @@ public class AuthController {
         try {
             manager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
             log.info("Authentication successful for username: {}", request.getUsername());
-
-            // No token generation here
-            Optional<User> user = userRepository.findByUsername(request.getUsername());
-            return user.map(u -> ResponseEntity.ok(new AuthResponse(
-                    null,
-                    "Authentication successful",
-                    u.getUsername(),
-                    u.getId(),
-                    u.getRole()))).orElseGet(
-                            () -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(new AuthResponse("User not found")));
-
+            String token = jwtUtil.generateToken(request.getUsername());
+            String user = request.getUsername();
+            return ResponseEntity.ok(new AuthResponse(token,"Authentication successful",user));
         } catch (BadCredentialsException e) {
             log.error("Invalid credentials for username: {}", request.getUsername());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AuthResponse("Invalid credentials"));
@@ -93,8 +89,7 @@ public class AuthController {
         userRepository.save(user);
 
         log.info("User registered: {}", request.getUsername());
-            String token = "";
-        // String token = jwtUtil.generateToken(request.getUsername());
+        String token = jwtUtil.generateToken(request.getUsername());
         return ResponseEntity.ok(new RegisterResponse(token,"User Registered successfully"));
     }
 
