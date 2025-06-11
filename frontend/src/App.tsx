@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
-import CarList from './pages/CarList';
+import CarList from './pages/HomePage';
 import Booking from './pages/Bookings';
 import PageLayout from './components/PageLayout';
 import Vehicles from './pages/Vehicles';
