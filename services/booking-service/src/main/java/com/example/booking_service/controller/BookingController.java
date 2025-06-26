@@ -47,4 +47,10 @@ public class BookingController {
     public ResponseEntity<String> test() {
         return ResponseEntity.ok("Booking Controller is working!");
     }
+
+     @GetMapping
+    public ResponseEntity<?> getAllBookings() {
+        log.info("Fetching all bookings");
+        return ResponseEntity.ok(bookingService.getAllBookings());
+    }
 }
