@@ -20,6 +20,16 @@ spring:
               args:
                 name: user-service-cb
                 fallbackUri: forward:/fallback/users
+        # Booking Service Routes
+        - id: booking-service
+          uri: lb://booking-service
+          predicates: 
+            - Path=/api/booking/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: booking-service-cb
+                fallbackUri: forward:/fallback/booking
       # Global CORS configuration
       globalcors:
         corsConfigurations:
@@ -97,3 +107,14 @@ resilience4j:
         waitDurationInOpenState: 5s
         failureRateThreshold: 50
         eventConsumerBufferSize: 10
+
+      booking-service-cb:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+      

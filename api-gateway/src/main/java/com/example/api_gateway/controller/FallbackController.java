@@ -25,6 +25,17 @@ public class FallbackController {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
     }
 
+    @GetMapping("/booking")
+    public ResponseEntity<Map<String, Object>> bookingServiceFallback() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Booking service is currently unavailable. Please try again later.");
+        response.put("status", "SERVICE_UNAVAILABLE");
+        response.put("timestamp", LocalDateTime.now());
+        response.put("service", "booking-service");
+        
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
+    }
+
     @GetMapping("/auth")
     public ResponseEntity<Map<String, Object>> authServiceFallback() {
         Map<String, Object> response = new HashMap<>();
