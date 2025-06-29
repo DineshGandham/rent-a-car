@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { confirmBooking } from "../api/bookingAPI";
 const initialState = {
   loading: false,
   pickupLocation: "",
@@ -15,7 +16,7 @@ export const vehicleReserve = createAsyncThunk(
   "reservation/submitReservation",
   async (reservationData, { rejectWithValue }) => {
     try {
-        const response = await axios.post('/api/reservations', reservationData);
+        const response = await confirmBooking(reservationData);
       return response.data;
     } catch (error) {
       return rejectWithValue(

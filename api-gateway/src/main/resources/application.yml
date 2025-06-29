@@ -34,7 +34,9 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOriginPatterns: "*"
+            allowedOrigins: 
+              - "http://localhost:5173"
+              - "http://127.0.0.1:5173"
             allowedMethods:
               - GET
               - POST
@@ -45,6 +47,9 @@ spring:
             allowedHeaders: "*"
             allowCredentials: true
             maxAge: 3600
+            exposedHeaders:
+              - "Content-Type"
+              - "Authorization"
       
       # Discovery configuration
       discovery:
@@ -62,7 +67,10 @@ eureka:
     healthcheck:
       enabled: true
   instance:
+    # Fix for DNS resolution issue
     prefer-ip-address: true
+    ip-address: 127.0.0.1
+    hostname: localhost
     lease-renewal-interval-in-seconds: 30
     lease-expiration-duration-in-seconds: 90
 
@@ -117,4 +125,3 @@ resilience4j:
         waitDurationInOpenState: 5s
         failureRateThreshold: 50
         eventConsumerBufferSize: 10
-      
