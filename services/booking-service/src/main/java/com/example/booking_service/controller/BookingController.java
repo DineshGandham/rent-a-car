@@ -12,7 +12,7 @@ import com.example.booking_service.entity.Booking;
 @RequestMapping("/api/booking")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
+// @CrossOrigin(origins = "*")
 public class BookingController {
     
     private final BookingService bookingService;
@@ -45,10 +45,11 @@ public class BookingController {
 
     @GetMapping("/test")
     public ResponseEntity<String> test() {
+        log.info("TEST endpoint hit");
         return ResponseEntity.ok("Booking Controller is working!");
     }
 
-     @GetMapping
+     @GetMapping("/all")
     public ResponseEntity<?> getAllBookings() {
         log.info("Fetching all bookings");
         return ResponseEntity.ok(bookingService.getAllBookings());

@@ -11,3 +11,17 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
+  instance:
+    # Fix for DNS resolution issue
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    hostname: localhost
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, mappings
+  endpoint:
+    health:
+      show-details: always

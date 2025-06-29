@@ -28,17 +28,17 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         return ((exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().toString();
-            System.out.println("🔎 Incoming request path: " + path);
+            System.out.println("Incoming request path: " + path);
 
             // Skip authentication for public endpoints
             if (isPublicEndpoint(path)) {
-                System.out.println("✅ Public endpoint detected, skipping auth: " + path);
+                System.out.println("Public endpoint detected, skipping auth: " + path);
                 return chain.filter(exchange);
             }
 
             // Check if Authorization header is present
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                System.out.println("❌ Missing Authorization header for path: " + path);
+                System.out.println("Missing Authorization header for path: " + path);
                 return onError(exchange, "Missing Authorization header", HttpStatus.UNAUTHORIZED);
             }
 
@@ -49,15 +49,15 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
-                System.out.println("✅ Extracted token: " + token);
+                System.out.println("Extracted token: " + token);
             } else {
-                System.out.println("❌ Invalid Authorization header format.");
+                System.out.println("Invalid Authorization header format.");
                 return onError(exchange, "Invalid Authorization header format", HttpStatus.UNAUTHORIZED);
             }
 
             // Validate JWT token
             if (!jwtUtil.validateToken(token)) {
-                System.out.println("❌ Invalid or expired token.");
+                System.out.println("Invalid or expired token.");
                 return onError(exchange, "Invalid or expired token", HttpStatus.UNAUTHORIZED);
             }
 
@@ -67,7 +67,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 String userId = jwtUtil.extractUserId(token);
                 String role = jwtUtil.extractRole(token);
 
-                System.out.println("👤 User validated. Username: " + username + ", ID: " + userId + ", Role: " + role);
+                System.out.println("User validated. Username: " + username + ", ID: " + userId + ", Role: " + role);
 
                 ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                         .header("X-User-Id", userId != null ? userId : "")
@@ -77,7 +77,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
                 return chain.filter(exchange.mutate().request(modifiedRequest).build());
             } catch (Exception e) {
-                System.out.println("❌ Token processing error: " + e.getMessage());
+                System.out.println("Token processing error: " + e.getMessage());
                 return onError(exchange, "Token processing error", HttpStatus.UNAUTHORIZED);
             }
         });
@@ -91,7 +91,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                          path.equals("/api/users/forgot-password") ||
                          path.equals("/api/users/reset-password");
 
-        System.out.println("🛡️ isPublicEndpoint(\"" + path + "\") = " + result);
+        System.out.println("isPublicEndpoint(\"" + path + "\") = " + result);
         return result;
     }
 
@@ -101,7 +101,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         response.getHeaders().add("Content-Type", "application/json");
 
         String body = "{\"error\":\"" + err + "\",\"status\":" + httpStatus.value() + "}";
-        System.out.println("🚫 Responding with error: " + body);
+        System.out.println("Responding with error: " + body);
 
         org.springframework.core.io.buffer.DataBuffer buffer = response.bufferFactory().wrap(body.getBytes());
         return response.writeWith(Mono.just(buffer));
