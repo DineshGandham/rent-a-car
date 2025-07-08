@@ -7,8 +7,33 @@ spring:
 
 eureka:
   client:
+    # Eureka server should not register with itself
+    register-with-eureka: false
+    fetch-registry: false
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      # Use the container name for Docker networking
+      defaultZone: http://eureka-server:8761/eureka/
   instance:
-    prefer-ip-address: true
-    ip-address: 127.0.0.1
+    # Use hostname instead of IP for Docker
+    hostname: eureka-server
+    prefer-ip-address: false
+  server:
+    # Disable self-preservation for development
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 4000
+
+# Enable management endpoints for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env
+  endpoint:
+    health:
+      show-details: always
+
+# Optional: Add logging for debugging
+logging:
+  level:
+    com.netflix.eureka: INFO
+    com.netflix.discovery: INFO
