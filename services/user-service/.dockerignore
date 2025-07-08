@@ -1,0 +1,24 @@
+# Maven build output
+target/
+
+# Maven wrapper cache JAR (optional – keep if needed)
+# .mvn/wrapper/maven-wrapper.jar
+
+# Maven logs
+mvnw.cmd
+
+# DO NOT ignore .mvn or mvnw if using them in Dockerfile
+# .mvn/    ❌ (comment this out if you use Maven wrapper in Dockerfile)
+# mvnw     ❌ (comment this out if you use it in Dockerfile)
+
+# Git
+.git
+.gitignore
+
+# IDE and OS files
+*.iml
+*.class
+*.log
+*.DS_Store
+.idea/
+.vscode/

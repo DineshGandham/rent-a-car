@@ -58,6 +58,7 @@ spring:
           lower-case-service-id: true
 
 # Eureka Client Configuration
+# Default profile (local run)
 eureka:
   client:
     service-url:
@@ -67,12 +68,26 @@ eureka:
     healthcheck:
       enabled: true
   instance:
-    # Fix for DNS resolution issue
     prefer-ip-address: true
     ip-address: 127.0.0.1
     hostname: localhost
     lease-renewal-interval-in-seconds: 30
     lease-expiration-duration-in-seconds: 90
+
+---
+# Docker profile
+dspring:
+  profiles: docker
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+    healthcheck:
+      enabled: true
+# No instance config for Docker, let container networking handle it
 
 # JWT Configuration
 jwt:

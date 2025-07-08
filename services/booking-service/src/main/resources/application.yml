@@ -10,12 +10,10 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/
   instance:
-    # Fix for DNS resolution issue
     prefer-ip-address: true
-    ip-address: 127.0.0.1
-    hostname: localhost
+    hostname: booking-service
 
 management:
   endpoints:

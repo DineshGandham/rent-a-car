@@ -1,0 +1,150 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: car-rental-postgres
+    env_file: .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - car-rental-network
+
+  mongodb:
+    image: mongo:6.0-jammy
+    container_name: car-rental-mongodb
+    env_file: .env
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - car-rental-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: car-rental-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - car-rental-network
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+    container_name: car-rental-eureka
+    hostname: eureka-server
+    ports:
+      - "8761:8761"
+    volumes:
+      - ~/.m2:/root/.m2
+    networks:
+      - car-rental-network
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: car-rental-api-gateway
+    ports:
+      - "8080:8080"
+    volumes:
+      - ~/.m2:/root/.m2
+    env_file:
+      - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - car-rental-network
+
+  user-service:
+    build:
+      context: ./services/user-service
+    container_name: car-rental-user-service
+    volumes:
+      - ~/.m2:/root/.m2
+    env_file:
+      - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/car_rental?authSource=admin
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+    networks:
+      - car-rental-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  booking-service:
+    build:
+      context: ./services/booking-service
+    container_name: car-rental-booking-service
+    volumes:
+      - ~/.m2:/root/.m2
+    env_file:
+      - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=${REDIS_PORT}
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+    networks:
+      - car-rental-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: car-rental-frontend
+    ports:
+      - "5173:5173"
+    env_file:
+      - .env
+    environment:
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+    depends_on:
+      - api-gateway
+    networks:
+      - car-rental-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+  mongodb_data:
+
+networks:
+  car-rental-network:
+    driver: bridge
